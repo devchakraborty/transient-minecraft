@@ -9,4 +9,4 @@ sudo service docker start
 sudo gpasswd -a $USER docker
 newgrp docker
 docker build -t minecraft .
-tmux new -s minecraft 'docker run -i minecraft'
+tmux new -d -s minecraft 'docker run -i minecraft'
