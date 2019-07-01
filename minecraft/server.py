@@ -6,6 +6,7 @@ import re
 import logging
 import os
 import shutil
+import argparse
 
 from dataclasses import dataclass
 from typing import Optional
@@ -20,6 +21,12 @@ DEFAULT_MINECRAFT_PATH = '/opt/minecraft'
 
 
 class Server:
+    """
+    Represents a transient Minecraft server that pulls a save from the cloud,
+    runs the server, and then on shutdown, pushes the new save back to the cloud
+    and frees its compute resources.
+    """
+
     def __init__(self, cloud: Cloud) -> None:
         self.cloud = cloud
 
@@ -118,5 +125,14 @@ class Server:
 
 
 if __name__ == '__main__':
-    server = Server(cloud=AWSCloud())
-    server.start()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--cloud', type=str, choices=['aws'])
+
+    args = parser.parse_args()
+
+    if args.cloud == 'aws':
+        AWSCloud.create_instance()
+    else:
+        server = Server(cloud=AWSCloud())
+        server.start()
