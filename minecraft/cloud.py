@@ -88,7 +88,7 @@ class AWSCloud(Cloud):
         command = (
             'python -m awscli ec2 run-instances --image-id %s '
             '--instance-type %s --user-data file://aws/startup.sh '
-            '--instance-initiated-shutdown-behavior terminate --key-name %s'
+            '--instance-initiated-shutdown-behavior terminate --key-name %s '
             '--security-groups %s'
         ) % (
             AWSCloud.IMAGE_ID, AWSCloud.INSTANCE_TYPE, AWSCloud.KEY_NAME,
