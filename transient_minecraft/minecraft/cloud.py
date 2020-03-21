@@ -119,6 +119,11 @@ class GCloud(Cloud):
             "GOOGLE_APPLICATION_CREDENTIALS",  # path to json file
         ]
 
+    @property
+    def startup_script(self) -> str:
+        with open("gcloud/startup.sh", "r") as startup_script:
+            return startup_script.read()
+
     def create_instance(self) -> None:
         # Get the latest Debian image
         image_response = (
