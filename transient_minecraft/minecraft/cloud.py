@@ -134,6 +134,7 @@ class GCloud(Cloud):
             "GCLOUD_MACHINE_TYPE",  # e.g., e2-standard-2
             "GCLOUD_PROJECT_ID",
             "GCLOUD_BUCKET",
+            "GCLOUD_FIREWALL_TAG",
         ]
 
     @property
@@ -186,6 +187,7 @@ class GCloud(Cloud):
                     ],
                 }
             ],
+            "tags": {"items": ["GCLOUD_FIREWALL_TAG"]},
         }
 
         # Create the instance
