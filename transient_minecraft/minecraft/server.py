@@ -6,6 +6,7 @@ import logging
 import os
 import shutil
 import argparse
+import pathlib
 
 from typing import Optional
 from distutils.version import StrictVersion
@@ -50,7 +51,7 @@ class Server:
 
             print("Starting Minecraft server...")
             process = psutil.Popen(
-                args=shlex.split(command),
+                args=shlex.split(command, posix=os.name != "nt"),
                 stdin=sys.stdin,
                 stdout=sys.stdout,
                 cwd=self._minecraft_path,
@@ -65,7 +66,8 @@ class Server:
         """
         Creates the path where Minecraft will run
         """
-        os.makedirs(self._minecraft_path)
+        if not pathlib.Path(self._minecraft_path).is_dir():
+            os.makedirs(self._minecraft_path)
 
     def _create_minecraft_eula(self) -> None:
         """

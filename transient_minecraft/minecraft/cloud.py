@@ -108,7 +108,7 @@ class Cloud(ABC):
         """
         Returns a timestamp for use in save filenames.
         """
-        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class GCloud(Cloud):
