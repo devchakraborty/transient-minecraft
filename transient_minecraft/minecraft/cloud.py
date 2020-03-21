@@ -177,9 +177,10 @@ class GCloud(Cloud):
         }
 
         # Create the instance
+        project = self.env.str("GCLOUD_PROJECT_ID")
         create_result = (
             self.compute.instances()
-            .insert(project=self.env.str("GCLOUD_PROJECT_ID"), zone=zone, body=config)
+            .insert(project=project, zone=zone, body=config)
             .execute()
         )
 
