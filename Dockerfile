@@ -1,13 +1,13 @@
 FROM python:3.7-alpine
 
-RUN apk add openjdk8
+RUN apk install -y openjdk8
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt
+RUN pip install poetry
 
 COPY . .
 
-RUN python setup.py install
+RUN poetry install
 
-ENTRYPOINT [ "python", "-m", "minecraft.server" ]
+ENTRYPOINT [ "poetry", "run", "server", "--cloud", "gcloud" ]
+
+EXPOSE 25565
