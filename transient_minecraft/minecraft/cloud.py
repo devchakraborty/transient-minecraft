@@ -91,12 +91,15 @@ class Cloud(ABC):
         ).decode("ascii")
         env_file_line = f"echo '{encoded_assignments}' | base64 -d > .env"
 
-        # Insert this line of code in the startup script right after #!/bin/bash
+        # Insert this line of code in the startup script right after
+        # "cd transient-minecraft"
         startup_script_lines = self.startup_script.strip().splitlines()
-        new_script_lines = [
-            startup_script_lines[0],
-            env_file_line,
-        ] + startup_script_lines[1:]
+        cd_idx = startup_script_lines.index("cd transient-minecraft")
+        new_script_lines = (
+            startup_script_lines[: cd_idx + 1]
+            + [env_file_line]
+            + startup_script_lines[cd_idx + 1 :]
+        )
 
         return "".join(f"{line}\n" for line in new_script_lines)
 
@@ -118,7 +121,7 @@ class GCloud(Cloud):
         return [
             "GCLOUD_ZONE",  # e.g., us-west1-a
             "GCLOUD_MACHINE_TYPE",  # e.g., e2-standard-2
-            "GOOGLE_APPLICATION_CREDENTIALS",  # path to json file
+            "GCLOUD_PROJECT_ID",
         ]
 
     @property
@@ -173,15 +176,10 @@ class GCloud(Cloud):
             ],
         }
 
-        # Get the project id
-        with open(self.env.str("GOOGLE_APPLICATION_CREDENTIALS"), "r") as creds_file:
-            creds = json.loads(creds_file.read())
-            project = creds["project_id"]
-
         # Create the instance
         create_result = (
             self.compute.instances()
-            .insert(project=project, zone=zone, body=config)
+            .insert(project=self.env.str("GCLOUD_PROJECT_ID"), zone=zone, body=config)
             .execute()
         )
 
