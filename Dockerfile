@@ -1,6 +1,6 @@
 FROM python:3.7-alpine
 
-RUN apk install -y openjdk8
+RUN apt install -y openjdk8
 
 RUN pip install poetry
 
