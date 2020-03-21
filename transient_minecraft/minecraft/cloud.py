@@ -36,6 +36,7 @@ class Cloud(ABC):
             self.env.str(env_var)
 
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger.setLevel(logging.DEBUG)
 
     @abstractmethod
     def create_instance(self) -> None:
@@ -241,7 +242,7 @@ class GCloud(Cloud):
         zipped_save_file = tempfile.NamedTemporaryFile(delete=False)
         zipped_save_file.close()
         shutil.make_archive(zipped_save_file.name, "zip", local_path)
-        blob.upload_from_filename(zipped_save_file.name)
+        blob.upload_from_filename(f"{zipped_save_file.name}.zip")
         self.logger.info(f"Uploaded save: {blob_name}")
 
     def kill_instance(self) -> None:
