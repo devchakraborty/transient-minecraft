@@ -43,9 +43,7 @@ class Server:
         """
         try:
             self._create_minecraft_path()
-            self.cloud.get_save(
-                self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH)
-            )
+            self.cloud.get_save(self._minecraft_path)
             self._create_minecraft_eula()
             command = self._build_minecraft_cmd()
 
@@ -53,29 +51,25 @@ class Server:
                 args=shlex.split(command),
                 stdin=sys.stdin,
                 stdout=sys.stdout,
-                cwd=self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH),
+                cwd=self._minecraft_path,
             ):
                 print("Starting Minecraft server...")
         finally:
             print("Minecraft server stopped.")
-            self.cloud.put_save(
-                self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH)
-            )
+            self.cloud.put_save(self._minecraft_path)
             self.cloud.kill_instance()
 
     def _create_minecraft_path(self) -> None:
         """
         Creates the path where Minecraft will run
         """
-        os.makedirs(self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH))
+        os.makedirs(self._minecraft_path)
 
     def _create_minecraft_eula(self) -> None:
         """
         Creates the EULA file with EULA accepted
         """
-        eula_path = os.path.join(
-            self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH), "eula.txt"
-        )
+        eula_path = os.path.join(self._minecraft_path, "eula.txt")
         if not os.path.exists(eula_path):
             shutil.copy("eula.txt", eula_path)
 
@@ -116,6 +110,10 @@ class Server:
         return os.path.abspath(
             os.path.join(JARS_PATH, "minecraft_server.%s.jar" % preferred_version)
         )
+
+    @property
+    def _minecraft_path(self) -> str:
+        return self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH)
 
 
 def main() -> None:

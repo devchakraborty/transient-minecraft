@@ -186,6 +186,47 @@ httplib2 = ">=0.9.1"
 
 [[package]]
 category = "main"
+description = "Google Cloud API client core library"
+name = "google-cloud-core"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
+version = "1.3.0"
+
+[package.dependencies]
+google-api-core = ">=1.16.0,<2.0.0dev"
+
+[package.extras]
+grpc = ["grpcio (>=1.8.2,<2.0dev)"]
+
+[[package]]
+category = "main"
+description = "Google Cloud Storage API client library"
+name = "google-cloud-storage"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
+version = "1.26.0"
+
+[package.dependencies]
+google-auth = ">=1.11.0,<2.0dev"
+google-cloud-core = ">=1.2.0,<2.0dev"
+google-resumable-media = ">=0.5.0,<0.6dev"
+
+[[package]]
+category = "main"
+description = "Utilities for Google Media Downloads and Resumable Uploads"
+name = "google-resumable-media"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
+version = "0.5.0"
+
+[package.dependencies]
+six = "*"
+
+[package.extras]
+requests = ["requests (>=2.18.0,<3.0.0dev)"]
+
+[[package]]
+category = "main"
 description = "Common protobufs used in Google APIs"
 name = "googleapis-common-protos"
 optional = false
@@ -491,7 +532,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "176eec6353d5dd2bea767f0c690b70a94cf2fb68fcf3e0b0d9ec7c58d397ff35"
+content-hash = "006403f490757ace9974f385e263653b46c1cc62a12cb3ac7b7817313d141029"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -551,6 +592,18 @@ google-auth = [
 google-auth-httplib2 = [
     {file = "google-auth-httplib2-0.0.3.tar.gz", hash = "sha256:098fade613c25b4527b2c08fa42d11f3c2037dda8995d86de0745228e965d445"},
     {file = "google_auth_httplib2-0.0.3-py2.py3-none-any.whl", hash = "sha256:f1c437842155680cf9918df9bc51c1182fda41feef88c34004bd1978c8157e08"},
+]
+google-cloud-core = [
+    {file = "google-cloud-core-1.3.0.tar.gz", hash = "sha256:878f9ad080a40cdcec85b92242c4b5819eeb8f120ebc5c9f640935e24fc129d8"},
+    {file = "google_cloud_core-1.3.0-py2.py3-none-any.whl", hash = "sha256:6ae5c62931e8345692241ac1939b85a10d6c38dc9e2854bdbacb7e5ac3033229"},
+]
+google-cloud-storage = [
+    {file = "google-cloud-storage-1.26.0.tar.gz", hash = "sha256:ffdfaeb319c47deaf5b25c6bf1f1f52a183ba6abb0bb80586509a9b68dc35d31"},
+    {file = "google_cloud_storage-1.26.0-py2.py3-none-any.whl", hash = "sha256:22f25d1c627b9b688b8873ea48203f337dd5448a242089e688d99c2fa46a8b89"},
+]
+google-resumable-media = [
+    {file = "google-resumable-media-0.5.0.tar.gz", hash = "sha256:2a8fd188afe1cbfd5998bf20602f76b0336aa892de88fe842a806b9a3ed78d2a"},
+    {file = "google_resumable_media-0.5.0-py2.py3-none-any.whl", hash = "sha256:b86140d5a0b6d290084b11bde90ee9aecad357ba0e0d67388d016b8340320927"},
 ]
 googleapis-common-protos = [
     {file = "googleapis-common-protos-1.51.0.tar.gz", hash = "sha256:013c91704279119150e44ef770086fdbba158c1f978a6402167d47d5409e226e"},

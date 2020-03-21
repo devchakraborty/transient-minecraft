@@ -9,6 +9,9 @@ import json
 import logging
 import uuid
 import base64
+import datetime
+import zipfile
+import shutil
 
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Optional, Dict, Any, Sequence
@@ -16,6 +19,7 @@ from collections import deque
 
 import googleapiclient as google
 import googleapiclient.discovery
+from google.cloud import storage
 from environs import Env
 
 
@@ -103,6 +107,12 @@ class Cloud(ABC):
 
         return "".join(f"{line}\n" for line in new_script_lines)
 
+    def get_timestamp(self) -> str:
+        """
+        Returns a timestamp for use in save filenames.
+        """
+        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 
 class GCloud(Cloud):
     """
@@ -115,6 +125,7 @@ class GCloud(Cloud):
         super(GCloud, self).__init__()
 
         self.compute = google.discovery.build("compute", "v1")
+        self.storage_client = storage.Client()
 
     @property
     def required_env_vars(self) -> Sequence[str]:
@@ -122,6 +133,7 @@ class GCloud(Cloud):
             "GCLOUD_ZONE",  # e.g., us-west1-a
             "GCLOUD_MACHINE_TYPE",  # e.g., e2-standard-2
             "GCLOUD_PROJECT_ID",
+            "GCLOUD_BUCKET",
         ]
 
     @property
@@ -206,10 +218,24 @@ class GCloud(Cloud):
         self.logger.info(f"Successfully created instance '{instance_name}'.")
 
     def get_save(self, local_path: str) -> None:
-        raise NotImplementedError()
+        blobs = list(
+            self.storage_client.list_blobs(bucket_or_name=self.env.str("GCLOUD_BUCKET"))
+        )
+        if len(blobs) == 0:
+            self.logger.warn("No existing save!")
+            return
+        # TODO
+        print(blobs)
 
     def put_save(self, local_path: str) -> None:
-        raise NotImplementedError()
+        bucket = self.storage_client.bucket(self.env.str("GCLOUD_BUCKET"))
+        blob_name = self.get_timestamp()
+        blob = bucket.blob(blob_name)
+        self.logger.info(f"Uploading save: {blob_name}")
+        with tempfile.NamedTemporaryFile("w") as zipped_save_file:
+            shutil.make_archive(zipped_save_file.name, "zip", local_path)
+            blob.upload_from_filename(zipped_save_file.name)
+        self.logger.info(f"Uploaded save: {blob_name}")
 
     def kill_instance(self) -> None:
         raise NotImplementedError()
