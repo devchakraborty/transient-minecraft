@@ -187,6 +187,11 @@ class GCloud(Cloud):
             "tags": {"items": [self.env.str("GCLOUD_FIREWALL_TAG")]},
         }
 
+        if "GCLOUD_IP" in self.env.dump():
+            config["networkInterfaces"][0]["accessConfigs"][0]["natIP"] = self.env.str(
+                "GCLOUD_IP"
+            )
+
         # Create the instance
         project = self.env.str("GCLOUD_PROJECT_ID")
         create_result = (
