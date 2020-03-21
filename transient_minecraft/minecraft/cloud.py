@@ -86,7 +86,9 @@ class Cloud(ABC):
             f'{env_var}="{self.env.str(env_var)}"\n'
             for env_var in self.required_env_vars
         )
-        encoded_assignments = base64.b64encode(env_var_assignments.encode("utf-8"))
+        encoded_assignments = base64.b64encode(
+            env_var_assignments.encode("utf-8")
+        ).decode("ascii")
         env_file_line = f"echo '{encoded_assignments}' | base64 -d > .env"
 
         # Insert this line of code in the startup script right after #!/bin/bash
