@@ -187,7 +187,7 @@ class GCloud(Cloud):
                     ],
                 }
             ],
-            "tags": {"items": ["GCLOUD_FIREWALL_TAG"]},
+            "tags": {"items": [self.env.str("GCLOUD_FIREWALL_TAG")]},
         }
 
         # Create the instance
