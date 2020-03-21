@@ -11,6 +11,7 @@ awscli = "^1.18.26"
 google-api-python-client = "^1.8.0"
 google-cloud-storage = "^1.26.0"
 appdirs = "^1.4.3"
+psutil = "^5.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

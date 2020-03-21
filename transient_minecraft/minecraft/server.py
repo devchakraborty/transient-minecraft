@@ -1,5 +1,4 @@
 import shlex
-import subprocess
 import os
 import sys
 import re
@@ -11,6 +10,7 @@ import argparse
 from typing import Optional
 from distutils.version import StrictVersion
 
+import psutil
 import appdirs
 from environs import Env
 
@@ -48,13 +48,14 @@ class Server:
             self._create_minecraft_eula()
             command = self._build_minecraft_cmd()
 
-            with subprocess.Popen(
+            print("Starting Minecraft server...")
+            process = psutil.Popen(
                 args=shlex.split(command),
                 stdin=sys.stdin,
                 stdout=sys.stdout,
                 cwd=self._minecraft_path,
-            ):
-                print("Starting Minecraft server...")
+            )
+            process.wait()
         finally:
             print("Minecraft server stopped.")
             self.cloud.put_save(self._minecraft_path)
