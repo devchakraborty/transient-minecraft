@@ -12,4 +12,4 @@ cd transient-minecraft
 sudo usermod -aG docker $USER
 newgrp docker
 docker image build -t minecraft .
-docker run -i minecraft
+docker run -d -p 25565:25565 -i minecraft
