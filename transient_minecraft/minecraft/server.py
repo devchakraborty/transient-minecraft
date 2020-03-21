@@ -148,7 +148,6 @@ def main() -> None:
 
     args = parser.parse_args()
     cloud = CLOUD_TYPES[args.cloud]()
-    cloud.logger.setLevel(level=getattr(logging, args.log_level))
     if args.create_instance:
         cloud.create_instance()
     else:
