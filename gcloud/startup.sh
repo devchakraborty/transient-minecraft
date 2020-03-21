@@ -9,5 +9,7 @@ sudo apt update -y
 sudo apt install -y docker-ce git tmux
 git clone https://github.com/devchakraborty/transient-minecraft.git
 cd transient-minecraft
-docker build -t minecraft .
+sudo usermod -aG docker $USER
+newgrp docker
+docker image build -t minecraft .
 docker run -i minecraft

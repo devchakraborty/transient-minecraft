@@ -162,6 +162,15 @@ class GCloud(Cloud):
                     {"key": "startup-script", "value": self.get_env_startup_script()}
                 ]
             },
+            "serviceAccounts": [
+                {
+                    "email": "default",
+                    "scopes": [
+                        "https://www.googleapis.com/auth/devstorage.read_write",
+                        "https://www.googleapis.com/auth/logging.write",
+                    ],
+                }
+            ],
         }
 
         # Get the project id
