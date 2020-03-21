@@ -11,6 +11,7 @@ import argparse
 from typing import Optional
 from distutils.version import StrictVersion
 
+import appdirs
 from environs import Env
 
 from .cloud import Cloud, AWSCloud, GCloud
@@ -113,7 +114,9 @@ class Server:
 
     @property
     def _minecraft_path(self) -> str:
-        return self.env.str("MINECRAFT_PATH", default=DEFAULT_MINECRAFT_PATH)
+        return self.env.str(
+            "MINECRAFT_PATH", default=appdirs.user_data_dir("transient-minecraft")
+        )
 
 
 def main() -> None:
