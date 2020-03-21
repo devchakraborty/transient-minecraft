@@ -83,7 +83,8 @@ class Cloud(ABC):
         """
         # Generate a line of bash code that writes env vars to a .env file
         env_var_assignments = "".join(
-            f'key="{value}"\n' for env_var, self.env.str(env_var) in self.required_env_vars
+            f'{env_var}="{self.env.str(env_var)}"\n'
+            for env_var in self.required_env_vars
         )
         encoded_assignments = base64.b64encode(env_var_assignments)
         env_file_line = f"echo '{encoded_assignments}' | base64 -d > .env"
@@ -151,12 +152,9 @@ class GCloud(Cloud):
             ],
             "metadata": {
                 "items": [
-                    {
-                        "key": "startup-script",
-                        "value": self.get_env_startup_script()
-                    }
+                    {"key": "startup-script", "value": self.get_env_startup_script()}
                 ]
-            }
+            },
         }
 
         # Get the project id
