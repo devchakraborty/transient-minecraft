@@ -228,8 +228,9 @@ class GCloud(Cloud):
             return
         latest_blob = sorted(blobs, key=lambda b: b.name)[-1]
         self.logger.info(f"Downloading save: {latest_blob.name}")
-        with tempfile.NamedTemporaryFile() as zipped_save_file:
-            latest_blob.download_to_filename(zipped_save_file.name)
+        zipped_save_file = tempfile.NamedTemporaryFile(delete=False)
+        zipped_save_file.close()
+        latest_blob.download_to_filename(zipped_save_file.name)
         self.logger.info(f"Downloaded save: {latest_blob.name}")
 
     def put_save(self, local_path: str) -> None:
@@ -237,9 +238,10 @@ class GCloud(Cloud):
         blob_name = self.get_timestamp()
         blob = bucket.blob(blob_name)
         self.logger.info(f"Uploading save: {blob_name}")
-        with tempfile.NamedTemporaryFile() as zipped_save_file:
-            shutil.make_archive(zipped_save_file.name, "zip", local_path)
-            blob.upload_from_filename(zipped_save_file.name)
+        zipped_save_file = tempfile.NamedTemporaryFile(delete=False)
+        zipped_save_file.close()
+        shutil.make_archive(zipped_save_file.name, "zip", local_path)
+        blob.upload_from_filename(zipped_save_file.name)
         self.logger.info(f"Uploaded save: {blob_name}")
 
     def kill_instance(self) -> None:
