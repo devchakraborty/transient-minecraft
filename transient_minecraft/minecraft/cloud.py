@@ -190,8 +190,6 @@ class GCloud(Cloud):
                 "GCLOUD_IP"
             ]
 
-        print("CONFIG", config)
-
         # Create the instance
         project = os.environ["GCLOUD_PROJECT_ID"]
         create_result = (
