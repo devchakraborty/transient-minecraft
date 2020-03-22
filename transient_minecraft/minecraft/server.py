@@ -13,7 +13,7 @@ from distutils.version import StrictVersion
 
 import psutil
 import appdirs
-from environs import Env
+from dotenv import load_dotenv
 
 from .cloud import Cloud, AWSCloud, GCloud
 
@@ -34,11 +34,7 @@ class Server:
 
     def __init__(self, cloud: Cloud) -> None:
         self.cloud = cloud
-
-        self.env = Env()
-        self.env.read_env()
-
-        print("ENV", self.env.dump())
+        load_dotenv()
 
     def start(self) -> None:
         """
@@ -84,7 +80,7 @@ class Server:
         Builds the java call to start the Minecraft server
         """
         jar_file = self._get_minecraft_jar()
-        ram_mb = self.env.int("MINECRAFT_RAM_MB", default=1024)
+        ram_mb = int(os.environ.get("MINECRAFT_RAM_MB", "1024"))
 
         return "java -Xmx%dM -Xms%dM -jar %s nogui" % (ram_mb, ram_mb, jar_file)
 
@@ -101,7 +97,7 @@ class Server:
                 minecraft_versions.append(matches[1])
         minecraft_versions.sort(key=StrictVersion)
 
-        preferred_version = self.env.str("MINECRAFT_VERSION", default="latest")
+        preferred_version = os.environ.get("MINECRAFT_VERSION", "latest")
 
         if len(minecraft_versions) == 0:
             raise Exception("No Minecraft versions available")
@@ -119,8 +115,8 @@ class Server:
 
     @property
     def _minecraft_path(self) -> str:
-        return self.env.str(
-            "MINECRAFT_PATH", default=appdirs.user_data_dir("transient-minecraft")
+        return os.environ.get(
+            "MINECRAFT_PATH", appdirs.user_data_dir("transient-minecraft")
         )
 
 

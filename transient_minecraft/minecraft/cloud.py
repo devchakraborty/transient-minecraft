@@ -11,7 +11,7 @@ import base64
 import datetime
 import zipfile
 import shutil
-
+import pdb
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Optional, Dict, Any, Sequence
 from collections import deque
@@ -19,7 +19,7 @@ from collections import deque
 import googleapiclient as google
 import googleapiclient.discovery
 from google.cloud import storage
-from environs import Env
+from dotenv import load_dotenv
 
 
 class Cloud(ABC):
@@ -28,11 +28,10 @@ class Cloud(ABC):
     """
 
     def __init__(self) -> None:
-        self.env = Env()
-        self.env.read_env()
+        load_dotenv()
 
         for env_var in self.required_env_vars:
-            self.env.str(env_var)
+            assert env_var in os.environ
 
     @abstractmethod
     def create_instance(self) -> None:
@@ -84,8 +83,7 @@ class Cloud(ABC):
         """
         # Generate a line of bash code that writes env vars to a .env file
         env_var_assignments = "".join(
-            f'{env_var}="{self.env.str(env_var)}"\n'
-            for env_var in self.required_env_vars
+            f'{env_var}="{os.environ[env_var]}"\n' for env_var in self.required_env_vars
         )
         encoded_assignments = base64.b64encode(
             env_var_assignments.encode("utf-8")
@@ -149,8 +147,8 @@ class GCloud(Cloud):
         source_disk_image = image_response["selfLink"]
 
         # Configure the instance
-        zone = self.env.str("GCLOUD_ZONE")
-        machine_type = self.env.str("GCLOUD_MACHINE_TYPE")
+        zone = os.environ["GCLOUD_ZONE"]
+        machine_type = os.environ["GCLOUD_MACHINE_TYPE"]
         instance_name = f"mc-server-{uuid.uuid4()}"
         config = {
             "name": instance_name,
@@ -184,19 +182,18 @@ class GCloud(Cloud):
                     ],
                 }
             ],
-            "tags": {"items": [self.env.str("GCLOUD_FIREWALL_TAG")]},
+            "tags": {"items": [os.environ["GCLOUD_FIREWALL_TAG"]]},
         }
 
-        if "GCLOUD_IP" in self.env.dump():
-            config["networkInterfaces"][0]["accessConfigs"][0]["natIP"] = self.env.str(
+        if "GCLOUD_IP" in os.environ:
+            config["networkInterfaces"][0]["accessConfigs"][0]["natIP"] = os.environ[
                 "GCLOUD_IP"
-            )
+            ]
 
-        print("ENV", self.env.dump())
         print("CONFIG", config)
 
         # Create the instance
-        project = self.env.str("GCLOUD_PROJECT_ID")
+        project = os.environ["GCLOUD_PROJECT_ID"]
         create_result = (
             self.compute.instances()
             .insert(project=project, zone=zone, body=config)
@@ -224,7 +221,7 @@ class GCloud(Cloud):
 
     def get_save(self, local_path: str) -> None:
         blobs = list(
-            self.storage_client.list_blobs(bucket_or_name=self.env.str("GCLOUD_BUCKET"))
+            self.storage_client.list_blobs(bucket_or_name=os.environ["GCLOUD_BUCKET"])
         )
         if len(blobs) == 0:
             print("No existing save!")
@@ -237,7 +234,7 @@ class GCloud(Cloud):
         print(f"Downloaded save: {latest_blob.name}")
 
     def put_save(self, local_path: str) -> None:
-        bucket = self.storage_client.bucket(self.env.str("GCLOUD_BUCKET"))
+        bucket = self.storage_client.bucket(os.environ["GCLOUD_BUCKET"])
         blob_name = self.get_timestamp()
         blob = bucket.blob(blob_name)
         print(f"Uploading save: {blob_name}")
@@ -273,11 +270,11 @@ class AWSCloud(Cloud):
             # AWS CLI initial configuration - using AWS CLI for sync command
             aws_commands = [
                 "aws configure set aws_access_key_id %s"
-                % self.env.str("AWS_ACCESS_KEY_ID"),
+                % os.environ["AWS_ACCESS_KEY_ID"],
                 "aws configure set aws_secret_access_key %s"
-                % self.env.str("AWS_SECRET_ACCESS_KEY"),
+                % os.environ["AWS_SECRET_ACCESS_KEY"],
                 "aws configure set region %s"
-                % self.env.str("AWS_REGION", default=AWSCloud.DEFAULT_REGION),
+                % os.environ.get("AWS_REGION", AWSCloud.DEFAULT_REGION),
             ]
 
             for command in aws_commands:
@@ -371,8 +368,8 @@ class AWSCloud(Cloud):
     @property
     def _s3_path(self) -> str:
         return "s3://%s/%s" % (
-            self.env.str("AWS_S3_BUCKET"),
-            self.env.str("AWS_S3_SAVE_KEY"),
+            os.environ["AWS_S3_BUCKET"],
+            os.environ["AWS_S3_SAVE_KEY"],
         )
 
     def kill_instance(self) -> None:
