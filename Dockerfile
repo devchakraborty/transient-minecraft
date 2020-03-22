@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.7
 
 RUN apk add openjdk8 build-base libffi-dev openssl-dev
 
