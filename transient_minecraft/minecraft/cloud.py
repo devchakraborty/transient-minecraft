@@ -215,7 +215,18 @@ class GCloud(Cloud):
 
             time.sleep(1)
 
-        print(f"Successfully created instance '{instance_name}'.")
+        # Get the IP information from the created instance
+        instance_result = (
+            self.compute.instances()
+            .get(instance=poll_result["targetId"], project=project, zone=zone)
+            .execute()
+        )
+        instance_ip = instance_result["networkInterfaces"][0]["accessConfigs"][0][
+            "natIP"
+        ]
+
+        print(f"Successfully created instance '{instance_name}' on Google Cloud.")
+        print(f"IP: {instance_ip}")
 
     def get_save(self, local_path: str) -> None:
         blobs = list(
