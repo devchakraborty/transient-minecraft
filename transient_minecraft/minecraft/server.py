@@ -38,6 +38,8 @@ class Server:
         self.env = Env()
         self.env.read_env()
 
+        print("ENV", self.env.dump())
+
     def start(self) -> None:
         """
         Downloads the save, starts the Minecraft server, and uploads the save

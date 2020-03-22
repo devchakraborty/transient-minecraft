@@ -192,6 +192,9 @@ class GCloud(Cloud):
                 "GCLOUD_IP"
             )
 
+        print("ENV", self.env.dump())
+        print("CONFIG", config)
+
         # Create the instance
         project = self.env.str("GCLOUD_PROJECT_ID")
         create_result = (
