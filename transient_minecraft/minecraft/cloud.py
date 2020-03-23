@@ -1,17 +1,18 @@
-import subprocess
-import shlex
-import os
-import json
-import time
-import tempfile
-import pathlib
-import json
-import uuid
 import base64
 import datetime
-import zipfile
-import shutil
+import json
+import os
+import pathlib
 import pdb
+import requests
+import shlex
+import shutil
+import subprocess
+import tempfile
+import time
+import uuid
+import zipfile
+
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Optional, Dict, Any, Sequence
 from collections import deque
@@ -254,7 +255,17 @@ class GCloud(Cloud):
         print(f"Uploaded save: {blob_name}")
 
     def kill_instance(self) -> None:
-        raise NotImplementedError()
+        project = os.environ["GCLOUD_PROJECT_ID"]
+        zone = os.environ["GCLOUD_ZONE"]
+        # Get the instance name from the Goole Cloud Metadata server
+        instance_name = requests.get(
+            "http://metadata.google.internal/computeMetadata/v1/instance/name",
+            headers={"Metadata-Flavor": "Google"},
+        ).text
+        print(f"Deleting instance {instance_name} in {zone}")
+        self.compute.instances().delete(
+            project=project, zone=zone, instance=instance_name
+        ).execute()
 
 
 class AWSCloud(Cloud):
