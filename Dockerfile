@@ -1,6 +1,6 @@
-FROM python:3.7
+FROM python:3.7-buster
 
-RUN apk add openjdk8 build-base libffi-dev openssl-dev
+RUN apt install -y openjdk8 build-base libffi-dev openssl-dev
 
 RUN pip install poetry
 

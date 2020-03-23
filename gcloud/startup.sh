@@ -3,13 +3,11 @@
 sudo apt update -y
 sudo apt upgrade -y
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update -y
-sudo apt install -y docker-ce git tmux
+sudo apt install -y git python3.7 tmux
 git clone https://github.com/devchakraborty/transient-minecraft.git
 cd transient-minecraft
-sudo usermod -aG docker $USER
-newgrp docker
-docker image build -t minecraft .
-docker run -d -p 25565:25565 -i minecraft
+python3.7 -m pip install poetry
+python3.7 -m poetry install
+tmux new-session "python3.7 -m poetry run server --cloud gcloud"
