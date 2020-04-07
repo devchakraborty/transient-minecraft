@@ -58,7 +58,7 @@ class Server:
         finally:
             print("Minecraft server stopped.")
             self.cloud.put_save(self._minecraft_path)
-            if "TERMINATE_INSTANCE" in os.environ:
+            if "MINECRAFT_TERMINATE" in os.environ:
                 self.cloud.kill_instance()
 
     def _create_minecraft_path(self) -> None:
