@@ -7,6 +7,8 @@ sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libn
 
 # Get pyenv and set up environment
 curl https://pyenv.run | bash
+git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+
 # Run setup commands both in this session and in future bash sessions
 read -r -d "" pyenv_init_cmd << EOF
 
