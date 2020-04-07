@@ -8,7 +8,7 @@ sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libn
 # Get pyenv and set up environment
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
-# Run setup commands both in this session and in future bash sessions
+# Run setup commands in future bash sessions
 cat >> ~/.bashrc << EOF
 
 # pyenv setup
@@ -17,7 +17,10 @@ export PATH="\$PYENV_ROOT/bin:$PATH"
 eval "\$(pyenv init -)"
 
 EOF
-. ~/.bashrc
+
+# Run remaining commands in a new bash session
+
+bash << EOF
 
 # Build and install Python 3.7
 pyenv install 3.7.7
@@ -34,3 +37,5 @@ python -m poetry install
 # Run server in tmux
 tmux new-session -d -s minecraft
 tmux send-keys -t minecraft "python -m poetry run server --cloud gcloud" C-m
+
+EOF
