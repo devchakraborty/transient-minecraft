@@ -6,16 +6,15 @@ sudo apt upgrade -y
 sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev zlib1g zlib1g-dev git tmux
 
 # Get pyenv and set up environment
-curl https://pyenv.run | bash
-git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
 # Run setup commands both in this session and in future bash sessions
 read -r -d "" pyenv_init_cmd << EOF
 
 # pyenv setup
-export PATH="/.pyenv/bin:\$PATH"
-eval "\$(pyenv init -)"
-eval "\$(pyenv virtualenv-init -)"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 EOF
 echo "$pyenv_init_cmd" >> ~/.bashrc

@@ -243,15 +243,21 @@ class GCloud(Cloud):
         zipped_save_file.close()
         latest_blob.download_to_filename(zipped_save_file.name)
         print(f"Downloaded save: {latest_blob.name}")
+        print(f"Extracting save: {latest_blob.name}")
+        with zipfile.ZipFile(zipped_save_file.name, "r") as zip_file:
+            zip_file.extractall(local_path)
+        print(f"Extracted save: {latest_blob.name}")
 
     def put_save(self, local_path: str) -> None:
         bucket = self.storage_client.bucket(os.environ["GCLOUD_BUCKET"])
         blob_name = self.get_timestamp()
         blob = bucket.blob(blob_name)
-        print(f"Uploading save: {blob_name}")
         zipped_save_file = tempfile.NamedTemporaryFile(delete=False)
         zipped_save_file.close()
+        print(f"Compressing save: {blob_name}")
         shutil.make_archive(zipped_save_file.name, "zip", local_path)
+        print(f"Compressed save: {blob_name}")
+        print(f"Uploading save: {blob_name}")
         blob.upload_from_filename(f"{zipped_save_file.name}.zip")
         print(f"Uploaded save: {blob_name}")
 
