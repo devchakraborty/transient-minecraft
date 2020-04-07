@@ -7,8 +7,11 @@ sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libn
 
 # Get, build, and install Python 3.7
 curl https://pyenv.run | bash
-~/.pyenv/bin/pyenv install 3.7.7
-~/.pyenv/bin/pyenv global 3.7.7
+export PATH="/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+pyenv install 3.7.7
+pyenv global 3.7.7
 
 # Get Minecraft Python code
 git clone https://github.com/devchakraborty/transient-minecraft.git
