@@ -11,9 +11,9 @@ curl https://pyenv.run | bash
 read -r -d "" pyenv_init_cmd << EOF
 
 # pyenv setup
-export PATH="/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+export PATH="/.pyenv/bin:\$PATH"
+eval "\$(pyenv init -)"
+eval "\$(pyenv virtualenv-init -)"
 
 EOF
 echo "$pyenv_init_cmd" >> ~/.bashrc
