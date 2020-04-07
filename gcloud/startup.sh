@@ -9,7 +9,7 @@ sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libn
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
 # Run setup commands both in this session and in future bash sessions
-read -r -d "" pyenv_init_cmd << EOF
+cat >> ~/.bashrc << EOF
 
 # pyenv setup
 export PYENV_ROOT="\$HOME/.pyenv"
@@ -17,8 +17,7 @@ export PATH="\$PYENV_ROOT/bin:$PATH"
 eval "\$(pyenv init -)"
 
 EOF
-echo "$pyenv_init_cmd" >> ~/.bashrc
-eval "$pyenv_init_cmd"
+. ~/.bashrc
 
 # Build and install Python 3.7
 pyenv install 3.7.7
