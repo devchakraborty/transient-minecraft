@@ -8,15 +8,16 @@ sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libn
 # Get, build, and install Python 3.7
 curl https://pyenv.run | bash
 ~/.pyenv/bin/pyenv install 3.7.7
+~/.pyenv/bin/pyenv global 3.7.7
 
 # Get Minecraft Python code
 git clone https://github.com/devchakraborty/transient-minecraft.git
 cd transient-minecraft
 
 # Get Python deps
-python3.7 -m pip install poetry --user
-python3.7 -m poetry install
+python -m pip install poetry --user
+python -m poetry install
 
 # Run server in tmux
-python3.7 -m poetry run server --cloud gcloud &
+python -m poetry run server --cloud gcloud &
 disown %1
