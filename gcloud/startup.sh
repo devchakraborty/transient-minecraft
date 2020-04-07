@@ -12,9 +12,9 @@ git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 read -r -d "" pyenv_init_cmd << EOF
 
 # pyenv setup
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+export PYENV_ROOT="\$HOME/.pyenv"
+export PATH="\$PYENV_ROOT/bin:$PATH"
+eval "\$(pyenv init -)"
 
 EOF
 echo "$pyenv_init_cmd" >> ~/.bashrc
