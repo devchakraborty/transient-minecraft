@@ -18,13 +18,14 @@ eval "\$(pyenv init -)"
 
 EOF
 
-# Run remaining commands in a new bash session
-
-bash << EOF
+# Set up pyenv in this session
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(~/.pyenv/bin/pyenv init -)"
 
 # Build and install Python 3.7
-pyenv install 3.7.7
-pyenv global 3.7.7
+~/.pyenv/bin/pyenv install 3.7.7
+~/.pyenv/bin/pyenv global 3.7.7
 
 # Get Minecraft Python code
 git clone https://github.com/devchakraborty/transient-minecraft.git
@@ -37,5 +38,3 @@ python -m poetry install
 # Run server in tmux
 tmux new-session -d -s minecraft
 tmux send-keys -t minecraft "python -m poetry run server --cloud gcloud" C-m
-
-EOF
