@@ -3,7 +3,7 @@
 # Get deps
 sudo apt update -y
 sudo apt upgrade -y
-sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev zlib1g zlib1g-dev git reptyr
+sudo apt install -y default-jdk build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev zlib1g zlib1g-dev git tmux
 
 # Get, build, and install Python 3.7
 curl https://pyenv.run | bash
@@ -22,5 +22,5 @@ python -m pip install poetry --user
 python -m poetry install
 
 # Run server in tmux
-python -m poetry run server --cloud gcloud &
-disown %1
+tmux new-session -d -s minecraft
+tmux send-keys -t minecraft "python -m poetry run server --cloud gcloud" C-m
