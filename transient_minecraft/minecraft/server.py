@@ -23,7 +23,16 @@ CLOUD_TYPES = {
     "aws": AWSCloud,
     "gcloud": GCloud,
 }
-
+MINECRAFT_FLAGS = (
+    "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 "
+    "-XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC "
+    "-XX:-OmitStackTraceInFastThrow -XX:+AlwaysPreTouch "
+    "-XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M "
+    "-XX:G1ReservePercent=15 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=8 "
+    "-XX:InitiatingHeapOccupancyPercent=20 -XX:G1MixedGCLiveThresholdPercent=90 "
+    "-XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 "
+    "-XX:MaxTenuringThreshold=1"
+)
 
 class Server:
     """
@@ -83,7 +92,9 @@ class Server:
         jar_file = self._get_minecraft_jar()
         ram_mb = int(os.environ.get("MINECRAFT_RAM_MB", "1024"))
 
-        return "java -Xmx%dM -Xms%dM -jar %s nogui" % (ram_mb, ram_mb, jar_file)
+        return (
+            f"java -Xmx{ram_mb}M -Xms{ram_mb}M {MINECRAFT_FLAGS} -jar {jar_file} nogui"
+        )
 
     def _get_minecraft_jar(self) -> str:
         """
